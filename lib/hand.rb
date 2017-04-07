@@ -2,36 +2,35 @@ require_relative 'deck'
 
 class Hand
 
-  def initialize(cards)
-    @hand = cards
+  attr_reader :hand_cards
+
+  def initialize(hand_cards = [])
+    @hand_cards = hand_cards
   end
 
   def calculate_hand
-    sum = 0
-    @hand.each do |card|
-      rank = card.split('')[0]
-      if card.split('').length > 2 || rank == "J" || rank == "Q" || rank == "K"
+    sum_without_ace = 0
+    @hand_cards.each do |card|
+      if card.face_card?
         value = 10
-      elsif rank == "A"
-        value = 11
-        @boo = 1
-      else
-        value = rank.to_i
+      elsif card.ace?
+        value = 0
+      else !card.ace?
+        value = card.rank.to_i
       end
-      sum += value
+      sum_without_ace += value
     end
-    if sum > 21
-      if @boo
-        sum -= 10
-      else
-      "fails"
+    sum = sum_without_ace
+      @hand_cards.each do |card|
+        if card.ace? == true
+          if sum_without_ace <= 10
+            value = 11
+          else sum_without_ace > 10
+            value = 1
+          end
+          sum += value
+        end
       end
-    else sum <= 21
       sum
     end
-  end
 end
-
-# deck = Deck.new
-# cards = deck.deal(2)
-# hand = Hand.new(cards)
