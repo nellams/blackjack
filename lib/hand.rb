@@ -10,10 +10,12 @@ class Hand
 
   def calculate_hand
     sum_without_ace = 0
+    aces = []
     @hand_cards.each do |card|
       if card.face_card?
         value = 10
       elsif card.ace?
+        aces << card
         value = 0
       else !card.ace?
         value = card.rank.to_i
@@ -21,16 +23,18 @@ class Hand
       sum_without_ace += value
     end
     sum = sum_without_ace
-      @hand_cards.each do |card|
-        if card.ace? == true
-          if sum_without_ace <= 10
-            value = 11
-          else sum_without_ace > 10
-            value = 1
-          end
-          sum += value
+      aces.each do |card|
+        if sum <= 10
+          value = 11
+        else sum > 10
+          value = 1
         end
+        sum += value
       end
+    if sum > 21
+      "fails"
+    else
       sum
     end
+  end
 end
